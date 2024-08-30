@@ -9,12 +9,11 @@ app.use(expressLayouts)
 app.set("layout", "layout")
 app.use(express.static("public"))
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  next()
+})
 
 app.get("/", async (req, res) => {
   const result = await axios.get("https://invidious.jing.rocks/api/v1/trending?region=JP")
@@ -29,29 +28,23 @@ app.get("/search", async (req, res) => {
   res.render("search", { title: `検索結果: ${req.query.q}`, result: result.data, domain })
 })
 app.get("/watch", async (req, res) => {
-  const videoId = req.query.v;
-  const result = await axios.get(`https://invidious.jing.rocks/api/v1/videos/${videoId}`);
-  // console.log(result.data);
+  const videoId = req.query.v
+  try {
+    const result = await axios.get(`https://invidious.jing.rocks/api/v1/videos/${videoId}`)
 
-  // MP4形式の最高画質の動画URLを取得
-  const highestQualityVideo = result.data.adaptiveFormats
-    .filter((format) => format.type.includes("video/mp4"))
-    .reduce((prev, current) => {
-      return parseInt(prev.qualityLabel) > parseInt(current.qualityLabel) ? prev : current;
-    });
+    // 推奨事項とコメントを取得
+    const recommendations = result.data.recommendedVideos || []
+    const title = result.data.title
+    const description = result.data.descriptionHtml
 
-  // AAC形式の音声URLを取得
-  const audioFormat = result.data.adaptiveFormats.find((format) => format.type.includes("audio/mp4"));
+    
 
-  const videoUrl = highestQualityVideo ? highestQualityVideo.url : null;
-  const audioUrl = audioFormat ? audioFormat.url : null;
-  const title = result.data.title;
-
-  console.log('Video URL:', videoUrl);
-  console.log('Audio URL:', audioUrl);
-
-  res.render("watch", { title, videoId, videoUrl, audioUrl });
-});
+    res.render("watch", { title, videoId, recommendations, description })
+  } catch (error) {
+    console.error("Error fetching video details:", error)
+    res.status(500).send("Error fetching video details")
+  }
+})
 
 app.listen(3000, () => {
   console.log("hello")

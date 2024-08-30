@@ -1,0 +1,13 @@
+/* 既存のスタイル */
+a {
+  color: orange;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* recommendationsセクションのaタグのスタイル */
+.recommendations a {
+  color: black;
+}
