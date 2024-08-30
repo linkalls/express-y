@@ -1,27 +1,16 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Header</title>
-    <link href="/output.css" rel="stylesheet" />
-  </head>
-  <body class="font-sans bg-gray-100">
-    <header class="flex justify-between items-center p-4 bg-white shadow-md relative">
-      <!-- ロゴ -->
-      <div class="flex items-center space-x-2">
-        <a href="/"><span class="text-xl font-semibold text-gray-900">MyTube</span></a>
-      </div>
+<header class="flex justify-between items-center p-4 bg-white shadow-md relative">
+  <!-- ロゴ -->
+  <div class="flex items-center space-x-2">
+    <a href="/"><span class="text-xl font-semibold text-gray-900">MyTube</span></a>
+  </div>
 
-      <!-- 検索バー -->
-      <form action="/search" method="get" class="absolute left-1/2 transform -translate-x-1/2 flex items-center max-w-2xl w-full px-4">
-        <input type="text" name="q" placeholder="検索..." class="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"  required />
-        <button type="submit" class="p-2 bg-gray-100 border border-gray-300 rounded-r-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <svg class="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387zM8 14a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </form>
-    </header>
-  </body>
-</html>
+  <!-- 検索バー -->
+  <form action="/search" method="get" class="absolute left-1/2 transform -translate-x-1/2 flex items-center max-w-2xl w-full px-4">
+    <input type="text" name="q" placeholder="検索..." class="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2" required />
+    <button type="submit" class="p-2 bg-gray-100 border border-gray-300 rounded-r-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <svg class="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387zM8 14a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </form>
+</header>

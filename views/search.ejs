@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>検索結果</title>
-    <link href="/output.css" rel="stylesheet">
-  </head>
-  <body class="font-sans bg-gray-100">
-    <%- include('header') %>
-    <main class="p-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <% if (!result || result.length === 0) { %>
-          <p class="text-center col-span-1 md:col-span-2 lg:col-span-3">検索結果がありません</p>
-        <% } else { %>
-          <% result.forEach((item, i) => { %>
-            <% if (i !== 1 && item.title && item.videoId) { %>
-              <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <% if (item.videoThumbnails && item.videoThumbnails.length > 0) { %>
-                  <% const high = item.videoThumbnails.find(thumbnail => thumbnail.quality === 'high'); %>
-                  <% if (high) { %>
-                    <a href="http://<%= domain %>/watch?v=<%= item.videoId %>">
-                      <img src="<%= high.url %>" alt="Thumbnail" class="w-full h-48 object-cover">
-                    </a>
-                  <% } %>
-                <% } %>
-                <div class="p-4">
-                  <h2 class="text-lg font-semibold mb-2"><%= item.title %></h2>
-                  <a href="http://<%= domain %>/watch?v=<%= item.videoId %>" class="text-blue-500 hover:underline">動画urlはこちら</a>
-                </div>
-              </div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% if (!result || result.length === 0) { %>
+    <p class="text-center col-span-1 md:col-span-2 lg:col-span-3">検索結果がありません</p>
+  <% } else { %>
+    <% result.forEach((item, i) => { %>
+      <% if (i !== 1 && item.title && item.videoId) { %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <% if (item.videoThumbnails && item.videoThumbnails.length > 0) { %>
+            <% const high = item.videoThumbnails.find(thumbnail => thumbnail.quality === 'high'); %>
+            <% if (high) { %>
+              <a href="http://<%= domain %>/watch?v=<%= item.videoId %>">
+                <img src="<%= high.url %>" alt="Thumbnail" class="w-full h-48 object-cover">
+              </a>
             <% } %>
-          <% }) %>
-        <% } %>
-      </div>
-    </main>
-  </body>
-</html>
+          <% } %>
+          <div class="p-4">
+            <h2 class="text-lg font-semibold mb-2"><%= item.title %></h2>
+            <a href="http://<%= domain %>/watch?v=<%= item.videoId %>" class="text-blue-500 hover:underline">動画urlはこちら</a>
+          </div>
+        </div>
+      <% } %>
+    <% }) %>
+  <% } %>
+</div>

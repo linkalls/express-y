@@ -1,0 +1,35 @@
+<div class="container mx-auto mt-4">
+  <div class="relative pb-9/16">
+    <video id="videoPlayer" class="top-0 left-0 w-full h-full" src="<%= videoUrl %>" controls></video>
+    <audio id="audioPlayer" src="<%= audioUrl %>" controls style="display:none;"></audio>
+  </div>
+  <h1 class="text-2xl font-semibold mt-4"><%= title %></h1>
+</div>
+
+<script>
+  const video = document.getElementById('videoPlayer');
+  const audio = document.getElementById('audioPlayer');
+
+  // 動画と音声を同期して再生
+  video.addEventListener('play', () => audio.play());
+  video.addEventListener('pause', () => audio.pause());
+  video.addEventListener('seeked', () => audio.currentTime = video.currentTime);
+  video.addEventListener('timeupdate', () => {
+    if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+      audio.currentTime = video.currentTime;
+    }
+  });
+
+  // キーボードイベントで5秒飛ばし
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      video.currentTime = Math.max(0, video.currentTime - 5);
+      audio.currentTime = video.currentTime;
+      event.preventDefault(); // デフォルトの動作を防ぐ
+    } else if (event.key === 'ArrowRight') {
+      video.currentTime = Math.min(video.duration, video.currentTime + 5);
+      audio.currentTime = video.currentTime;
+      event.preventDefault(); // デフォルトの動作を防ぐ
+    }
+  });
+</script>
