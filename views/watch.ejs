@@ -1,35 +1,68 @@
-<div class="container mx-auto mt-4">
-  <div class="relative pb-9/16">
-    <video id="videoPlayer" class="top-0 left-0 w-full h-full" src="<%= videoUrl %>" controls></video>
-    <audio id="audioPlayer" src="<%= audioUrl %>" controls style="display:none;"></audio>
+<!-- views/watch.ejs -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/output.css">
+</head>
+<body class="font-sans bg-gray-100">
+  <%- include('header') %>
+  <div class="container mx-auto mt-4">
+    <div class="relative pb-9/16">
+      <video id="videoPlayer" class="top-0 left-0 w-full h-full" style="outline:none;width:100%;background-color:#000" playsinline="playsinline" tabindex="-1" role="application" preload="auto" controls>
+        お使いのブラウザは動画タグをサポートしていません。
+      </video>
+    </div>
+    <h1 class="text-2xl font-semibold mt-4"><%= title %></h1>
   </div>
-  <h1 class="text-2xl font-semibold mt-4"><%= title %></h1>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('videoPlayer');
+    const videoSrc = "<%= videoUrl %>";
+    let loadFailedCount = 0;
 
-<script>
-  const video = document.getElementById('videoPlayer');
-  const audio = document.getElementById('audioPlayer');
-
-  // 動画と音声を同期して再生
-  video.addEventListener('play', () => audio.play());
-  video.addEventListener('pause', () => audio.pause());
-  video.addEventListener('seeked', () => audio.currentTime = video.currentTime);
-  video.addEventListener('timeupdate', () => {
-    if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
-      audio.currentTime = video.currentTime;
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play();
+      });
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        loadFailedCount++;
+        console.error(`HLS error: ${data.type}`, data);
+        if (loadFailedCount >= 5) {
+          console.error('HLS failed to load after 5 attempts');
+        }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', () => {
+        video.play();
+      });
+      video.addEventListener('error', (event) => {
+        loadFailedCount++;
+        console.error(`Video load failed ${loadFailedCount} times`, event);
+        if (loadFailedCount >= 5) {
+          console.error('Video failed to load after 5 attempts');
+        }
+      });
+    } else {
+      console.error('HLS is not supported in this browser');
     }
-  });
 
-  // キーボードイベントで5秒飛ばし
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-      video.currentTime = Math.max(0, video.currentTime - 5);
-      audio.currentTime = video.currentTime;
-      event.preventDefault(); // デフォルトの動作を防ぐ
-    } else if (event.key === 'ArrowRight') {
-      video.currentTime = Math.min(video.duration, video.currentTime + 5);
-      audio.currentTime = video.currentTime;
-      event.preventDefault(); // デフォルトの動作を防ぐ
-    }
-  });
-</script>
+    // キーボードイベントで5秒飛ばし
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        video.currentTime = Math.max(0, video.currentTime - 5);
+        event.preventDefault(); // デフォルトの動作を防ぐ
+      } else if (event.key === 'ArrowRight') {
+        video.currentTime = Math.min(video.duration, video.currentTime + 5);
+        event.preventDefault(); // デフォルトの動作を防ぐ
+      }
+    });
+  </script>
+</body>
+</html>
