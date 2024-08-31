@@ -37,15 +37,20 @@ async function getBestFormat(videoId) {
   })
 }
 
-async function getVideoAndAudioUrls(videoId) {
+async function getVideoAndAudioUrls(videoId, userAgent) {
   return new Promise((resolve, reject) => {
-    exec(`yt-dlp -f "bestvideo[ext=webm][height<=1080]+bestaudio[ext=webm]/best[ext=webm]/best" --get-url "https://www.youtube.com/watch?v=${videoId}"`, (error, stdout) => {
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const format = isIOS 
+      ? 'best[ext=mp4][height<=1080]'
+      : 'bestvideo[ext=webm][height<=1080]+bestaudio[ext=m4a]/best[ext=webm]/best';
+
+    exec(`yt-dlp -f "${format}" --get-url "https://www.youtube.com/watch?v=${videoId}"`, (error, stdout) => {
       if (error) {
         return reject(error);
       }
       const urls = stdout.trim().split('\n');
       const videoUrl = urls[0];
-      const audioUrl = urls[1];
+      const audioUrl = isIOS ? null : urls[1];
       resolve({ videoUrl, audioUrl });
     });
   });
@@ -65,23 +70,23 @@ app.get("/search", async (req, res) => {
 })
 
 app.get("/watch", async (req, res) => {
-  const videoId = req.query.v
-  console.log(videoId)
+  const videoId = req.query.v;
+  const userAgent = req.headers['user-agent'];
+  console.log(videoId);
   try {
-    const result = await axios.get(`https://invidious.jing.rocks/api/v1/videos/${videoId}`)
-    const { videoUrl, audioUrl } = await getVideoAndAudioUrls(videoId)
+    const result = await axios.get(`https://invidious.jing.rocks/api/v1/videos/${videoId}`);
+    const { videoUrl, audioUrl } = await getVideoAndAudioUrls(videoId, userAgent);
 
-    const recommendations = result.data.recommendedVideos || []
-    const title = result.data.title
-    const description = result.data.descriptionHtml
+    const recommendations = result.data.recommendedVideos || [];
+    const title = result.data.title;
+    const description = result.data.descriptionHtml;
 
-    res.render("watch", { title, videoId, recommendations, description, videoUrl, audioUrl })
+    res.render("watch", { title, videoId, recommendations, description, videoUrl, audioUrl });
   } catch (error) {
-    console.error("Error fetching video details:", error)
-    res.status(500).send("Error fetching video details")
+    console.error("Error fetching video details:", error);
+    res.status(500).send("Error fetching video details");
   }
-})
-
+});
 
 app.listen(3000, () => {
   console.log("hello")

@@ -7,7 +7,33 @@ a:hover {
   text-decoration: underline;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+.video-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.recommendations {
+  margin-top: 16px;
+}
+
 /* recommendationsセクションのaタグのスタイル */
 .recommendations a {
   color: black;
 }
+
