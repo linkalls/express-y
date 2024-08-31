@@ -2,7 +2,11 @@
   <div class="flex-1">
     <h1 class="text-2xl font-semibold mt-4 mb-4"><%= title %></h1>
     <div class="relative" style="padding-bottom: 56.25%;"> <!-- 16:9 aspect ratio -->
-      <iframe id="videoPlayer" class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/<%= videoId %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <video id="videoPlayer" class="absolute top-0 left-0 w-full h-full" controls>
+        <source src="<%= videoUrl %>" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+      <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
     </div>
     <div class="mt-4">
       <h2 class="text-xl font-semibold">Description</h2>
@@ -23,3 +27,61 @@
     </ul>
   </div>
 </div>
+
+<script>
+  const videoPlayer = document.getElementById('videoPlayer');
+  const audioPlayer = document.getElementById('audioPlayer');
+  let syncTimer;
+
+  // 動画と音声を同期させる関数
+  function syncAudioVideo() {
+    if (Math.abs(videoPlayer.currentTime - audioPlayer.currentTime) > 0.1) {
+      audioPlayer.currentTime = videoPlayer.currentTime;
+    }
+  }
+
+  function setupSync() {
+    clearInterval(syncTimer);
+    syncTimer = setInterval(syncAudioVideo, 100);
+  }
+
+  function pauseAudio() {
+    audioPlayer.pause();
+    clearInterval(syncTimer);
+  }
+
+  function playAudio() {
+    audioPlayer.play();
+    setupSync();
+  }
+
+  videoPlayer.addEventListener('play', () => {
+    audioPlayer.currentTime = videoPlayer.currentTime;
+    playAudio();
+  });
+
+  videoPlayer.addEventListener('pause', () => {
+    pauseAudio();
+  });
+
+  videoPlayer.addEventListener('seeking', () => {
+    audioPlayer.currentTime = videoPlayer.currentTime;
+  });
+
+  videoPlayer.addEventListener('waiting', () => {
+    pauseAudio();
+  });
+
+  videoPlayer.addEventListener('canplay', () => {
+    playAudio();
+  });
+
+  videoPlayer.addEventListener('ended', () => {
+    pauseAudio();
+  });
+
+  audioPlayer.addEventListener('ended', () => {
+    videoPlayer.pause();
+    clearInterval(syncTimer);
+  });
+</script>
