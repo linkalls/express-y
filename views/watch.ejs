@@ -1,27 +1,36 @@
 <div class="container mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg">
   <h1 class="text-3xl font-bold mb-4"><%= title %></h1>
-  <div class="video-wrapper mb-8">
-    <video id="my-video" class="video-js vjs-default-skin w-full h-full" controls preload="auto">
-      <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
-    </video>
-    <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
-  </div>
-  <div class="mb-8">
-    <h2 class="text-2xl font-semibold mb-2">Description</h2>
-    <p class="text-gray-700"><%- description %></p>
-  </div>
-  <div class="recommendations">
-    <h2 class="text-2xl font-semibold mb-4">Recommendations</h2>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <% recommendations.forEach(recommendation => { %>
-      <li class="bg-gray-100 p-4 rounded-lg shadow-md">
-        <a href="/watch?v=<%= recommendation.videoId %>" class="block">
-          <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
-          <span class="text-lg font-semibold text-gray-900"><%= recommendation.title %></span>
-        </a>
-      </li>
-      <% }); %>
-    </ul>
+  <div class="flex flex-col lg:flex-row">
+    <div class="lg:w-3/4">
+      <div class="video-wrapper mb-8">
+        <video id="my-video" class="video-js vjs-default-skin w-full h-full" controls preload="auto">
+          <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
+        </video>
+        <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
+      </div>
+      <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">Description</h2>
+        <div id="description" class="text-gray-700 overflow-hidden max-h-24">
+          <%- description %>
+        </div>
+        <button id="toggleDescription" class="mt-2 text-blue-500">もっと見る</button>
+      </div>
+    </div>
+    <div class="lg:w-1/4">
+      <div class="recommendations">
+        <h2 class="text-2xl font-semibold mb-4">Recommendations</h2>
+        <ul class="space-y-4">
+          <% recommendations.forEach(recommendation => { %>
+          <li class="bg-gray-100 p-4 rounded-lg shadow-md">
+            <a href="/watch?v=<%= recommendation.videoId %>" class="block">
+              <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
+              <span class="text-lg font-semibold text-gray-900"><%= recommendation.title %></span>
+            </a>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -124,4 +133,18 @@
 
   // ビデオプレーヤーの音声を無効にする
   player.muted(true);
+
+  // Description toggle functionality
+  const description = document.getElementById("description");
+  const toggleDescription = document.getElementById("toggleDescription");
+
+  toggleDescription.addEventListener("click", () => {
+    if (description.classList.contains("max-h-24")) {
+      description.classList.remove("max-h-24");
+      toggleDescription.textContent = "減らす";
+    } else {
+      description.classList.add("max-h-24");
+      toggleDescription.textContent = "もっとみる";
+    }
+  });
 </script>

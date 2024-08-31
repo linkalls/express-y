@@ -63,11 +63,31 @@ app.get("/", async (req, res) => {
 })
 
 app.get("/search", async (req, res) => {
-  console.log(req.query)
-  const result = await axios.get(`https://invidious.jing.rocks/api/v1/search?q=${req.query.q}&region=JP`)
-  const domain = req.headers.host
-  res.render("search", { title: `検索結果: ${req.query.q}`, result: result.data, domain })
-})
+  const query = req.query.q;
+  const page = parseInt(req.query.page) || 1;
+  const domain = req.headers.host;
+
+  try {
+    const result = await axios.get(`https://invidious.jing.rocks/api/v1/search`, {
+      params: {
+        q: query,
+        page: page,
+        region: 'JP'
+      }
+    });
+
+    res.render("search", { 
+      title: `検索結果: ${query}`, 
+      result: result.data, 
+      query: query, 
+      page: page, 
+      domain: domain 
+    });
+  } catch (error) {
+    console.error("Error fetching search results:", error);
+    res.status(500).send("Error fetching search results");
+  }
+});
 
 app.get("/watch", async (req, res) => {
   const videoId = req.query.v;
