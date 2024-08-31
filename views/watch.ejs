@@ -13,7 +13,32 @@
     <link href="https://cdn.jsdelivr.net/npm/videojs-mobile-ui@0.6.1/dist/videojs-mobile-ui.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/videojs-share@3.2.1/dist/videojs-share.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/videojs-vr@1.8.0/dist/videojs-vr.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-vtt-thumbnails@0.0.13/dist/videojs-vtt-thumbnails.css" rel="stylesheet" />
+  <style>.container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+  }
+  .video-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .recommendations {
+    margin-top: 16px;
+  }
+  </style>  <link href="https://cdn.jsdelivr.net/npm/videojs-vtt-thumbnails@0.0.13/dist/videojs-vtt-thumbnails.css" rel="stylesheet" />
+  
   </head>
   <body>
     <div class="container">
