@@ -25,11 +25,31 @@
 
 <!-- ページネーション -->
 <div class="flex justify-center mt-8">
+  <% const totalPages = 10; // ここで総ページ数を設定します。APIから取得する場合は適宜変更してください。 %>
+  <% const startPage = Math.max(1, page - 2); %>
+  <% const endPage = Math.min(totalPages, page + 2); %>
+
   <% if (page > 1) { %>
-    <a href="/search?q=<%= query %>&page=<%= page - 1 %>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300">前へ</a>
+    <a href="/search?q=<%= query %>&page=<%= page - 1 %>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300 pagination-link">前へ</a>
   <% } %>
-  <span class="px-4 py-2 bg-gray-200 text-gray-700"><%= page %></span>
-  <% if (result.length === 20) { %> <!-- 1ページあたりの結果数に応じて調整 -->
-    <a href="/search?q=<%= query %>&page=<%= page + 1 %>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300">次へ</a>
+
+  <% for (let i = startPage; i <= endPage; i++) { %>
+    <% if (i === page) { %>
+      <span class="px-4 py-2 bg-gray-200 text-gray-700"><%= i %></span>
+    <% } else { %>
+      <a href="/search?q=<%= query %>&page=<%= i %>" class="px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 pagination-link"><%= i %></a>
+    <% } %>
+  <% } %>
+
+  <% if (page < totalPages) { %>
+    <a href="/search?q=<%= query %>&page=<%= page + 1 %>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300 pagination-link">次へ</a>
   <% } %>
 </div>
+
+<script>
+  document.querySelectorAll('.pagination-link').forEach(link => {
+    link.addEventListener('click', function() {
+      showLoading();
+    });
+  });
+</script>

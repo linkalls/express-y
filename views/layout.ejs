@@ -9,9 +9,21 @@
     <%- include('cdn') %>
   </head>
   <body class="font-sans bg-gray-100">
+    <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 hidden">
+      <div class="loader"></div>
+    </div>
     <%- include('header') %>
     <main class="p-4">
       <%- body %>
     </main>
+    <script>
+      function showLoading() {
+        document.getElementById('loading').classList.remove('hidden');
+      }
+
+      function hideLoading() {
+        document.getElementById('loading').classList.add('hidden');
+      }
+    </script>
   </body>
 </html>
