@@ -1,19 +1,34 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
-    <link href="https://vjs.zencdn.net/7.12.1/video-js.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/lib/videojs-resolution-switcher.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-overlay@2.1.4/dist/videojs-overlay.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@2.1.0/dist/videojs-contrib-quality-levels.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-markers@1.0.1/dist/videojs-markers.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-mobile-ui@0.6.1/dist/videojs-mobile-ui.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-share@3.2.1/dist/videojs-share.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/videojs-vr@1.8.0/dist/videojs-vr.css" rel="stylesheet" />
-  <style>.container {
+
+
+<div class="container">
+  <h1 class="text-2xl font-semibold"><%= title %></h1>
+  <div class="video-wrapper">
+    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto">
+      <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
+    </video>
+    <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
+  </div>
+  <div>
+    <h2 class="text-xl font-semibold">Description</h2>
+    <p><%- description %></p>
+  </div>
+  <div class="recommendations">
+    <h2 class="text-xl font-semibold">Recommendations</h2>
+    <ul>
+      <% recommendations.forEach(recommendation => { %>
+      <li>
+        <a href="/watch?v=<%= recommendation.videoId %>">
+          <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" style="width: 96px; height: 56px; object-fit: cover" />
+          <span><%= recommendation.title %></span>
+        </a>
+      </li>
+      <% }); %>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .container {
     display: flex;
     flex-direction: column;
     margin-top: 16px;
@@ -37,128 +52,86 @@
   .recommendations {
     margin-top: 16px;
   }
-  </style>  <link href="https://cdn.jsdelivr.net/npm/videojs-vtt-thumbnails@0.0.13/dist/videojs-vtt-thumbnails.css" rel="stylesheet" />
-  
-  </head>
-  <body>
-    <div class="container">
-      <h1 class="text-2xl font-semibold"><%= title %></h1>
-      <div class="video-wrapper">
-        <video id="my-video" class="video-js vjs-default-skin" controls preload="auto">
-          <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
-        </video>
-        <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
-      </div>
-      <div>
-        <h2 class="text-xl font-semibold">Description</h2>
-        <p><%- description %></p>
-      </div>
-      <div class="recommendations">
-        <h2 class="text-xl font-semibold">Recommendations</h2>
-        <ul>
-          <% recommendations.forEach(recommendation => { %>
-          <li>
-            <a href="/watch?v=<%= recommendation.videoId %>">
-              <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" style="width: 96px; height: 56px; object-fit: cover" />
-              <span><%= recommendation.title %></span>
-            </a>
-          </li>
-          <% }); %>
-        </ul>
-      </div>
-    </div>
+</style>
 
-    <script src="https://vjs.zencdn.net/7.12.1/video.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-youtube@2.6.1/dist/Youtube.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/lib/videojs-resolution-switcher.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-overlay@2.1.4/dist/videojs-overlay.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@2.1.0/dist/videojs-contrib-quality-levels.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-markers@1.0.1/dist/videojs-markers.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-mobile-ui@0.6.1/dist/videojs-mobile-ui.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-share@3.2.1/dist/videojs-share.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-vr@1.8.0/dist/videojs-vr.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/videojs-vtt-thumbnails@0.0.13/dist/videojs-vtt-thumbnails.js"></script>
-    <script>
-      var player = videojs("my-video", {
-        techOrder: ["youtube"],
-        plugins: {
-          videoJsResolutionSwitcher: {
-            default: "high",
-            dynamicLabel: true,
-          },
-          httpSourceSelector: {},
-          qualityLevels: {},
-          markers: {
-            markers: [
-              { time: 9.5, text: "Marker 1" },
-              { time: 16, text: "Marker 2" },
-            ],
-          },
-          mobileUi: {},
-          share: {},
-          vr: {},
-        },
-      });
+<script>
+  var player = videojs("my-video", {
+    techOrder: ["youtube"],
+    plugins: {
+      videoJsResolutionSwitcher: {
+        default: "high",
+        dynamicLabel: true,
+      },
+      httpSourceSelector: {},
+      qualityLevels: {},
+      markers: {
+        markers: [
+          { time: 9.5, text: "Marker 1" },
+          { time: 16, text: "Marker 2" },
+        ],
+      },
+      mobileUi: {},
+      share: {},
+      vr: {},
+    },
+  });
 
-      const audioPlayer = document.getElementById("audioPlayer");
-      let syncTimer;
+  const audioPlayer = document.getElementById("audioPlayer");
+  let syncTimer;
 
-      function syncAudioVideo() {
-        if (Math.abs(player.currentTime() - audioPlayer.currentTime) > 0.1) {
-          audioPlayer.currentTime = player.currentTime();
-        }
-      }
+  function syncAudioVideo() {
+    if (Math.abs(player.currentTime() - audioPlayer.currentTime) > 0.1) {
+      audioPlayer.currentTime = player.currentTime();
+    }
+  }
 
-      function setupSync() {
-        clearInterval(syncTimer);
-        syncTimer = setInterval(syncAudioVideo, 100);
-      }
+  function setupSync() {
+    clearInterval(syncTimer);
+    syncTimer = setInterval(syncAudioVideo, 100);
+  }
 
-      function pauseAudio() {
-        audioPlayer.pause();
-        clearInterval(syncTimer);
-      }
+  function pauseAudio() {
+    audioPlayer.pause();
+    clearInterval(syncTimer);
+  }
 
-      function playAudio() {
-        audioPlayer.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-        setupSync();
-      }
+  function playAudio() {
+    audioPlayer.play().catch((error) => {
+      console.error("Error playing audio:", error);
+    });
+    setupSync();
+  }
 
-      player.on("play", () => {
-        audioPlayer.currentTime = player.currentTime();
-        playAudio();
-      });
+  player.on("play", () => {
+    audioPlayer.currentTime = player.currentTime();
+    playAudio();
+  });
 
-      player.on("pause", () => {
-        pauseAudio();
-      });
+  player.on("pause", () => {
+    pauseAudio();
+  });
 
-      player.on("seeking", () => {
-        audioPlayer.currentTime = player.currentTime();
-      });
+  player.on("seeking", () => {
+    audioPlayer.currentTime = player.currentTime();
+  });
 
-      player.on("waiting", () => {
-        pauseAudio();
-      });
+  player.on("waiting", () => {
+    pauseAudio();
+  });
 
-      player.on("canplay", () => {
-        playAudio();
-      });
+  player.on("canplay", () => {
+    playAudio();
+  });
 
-      player.on("ended", () => {
-        pauseAudio();
-      });
+  player.on("ended", () => {
+    pauseAudio();
+  });
 
-      audioPlayer.addEventListener("ended", () => {
-        player.pause();
-        clearInterval(syncTimer);
-      });
+  audioPlayer.addEventListener("ended", () => {
+    player.pause();
+    clearInterval(syncTimer);
+  });
 
-      // ビデオプレーヤーの音声を無効にする
-      player.muted(true);
-    </script>
-  </body>
-</html>
+  // ビデオプレーヤーの音声を無効にする
+  player.muted(true);
+</script>
