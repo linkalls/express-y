@@ -1,25 +1,23 @@
-
-
-<div class="container">
-  <h1 class="text-2xl font-semibold"><%= title %></h1>
-  <div class="video-wrapper">
-    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto">
+<div class="container mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg">
+  <h1 class="text-3xl font-bold mb-4"><%= title %></h1>
+  <div class="video-wrapper mb-8">
+    <video id="my-video" class="video-js vjs-default-skin w-full h-full" controls preload="auto">
       <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
     </video>
     <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
   </div>
-  <div>
-    <h2 class="text-xl font-semibold">Description</h2>
-    <p><%- description %></p>
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-2">Description</h2>
+    <p class="text-gray-700"><%- description %></p>
   </div>
   <div class="recommendations">
-    <h2 class="text-xl font-semibold">Recommendations</h2>
-    <ul>
+    <h2 class="text-2xl font-semibold mb-4">Recommendations</h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <% recommendations.forEach(recommendation => { %>
-      <li>
-        <a href="/watch?v=<%= recommendation.videoId %>">
-          <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" style="width: 96px; height: 56px; object-fit: cover" />
-          <span><%= recommendation.title %></span>
+      <li class="bg-gray-100 p-4 rounded-lg shadow-md">
+        <a href="/watch?v=<%= recommendation.videoId %>" class="block">
+          <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
+          <span class="text-lg font-semibold text-gray-900"><%= recommendation.title %></span>
         </a>
       </li>
       <% }); %>
@@ -29,12 +27,7 @@
 
 <style>
   .container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 16px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
+    max-width: 1200px;
   }
   .video-wrapper {
     position: relative;
@@ -48,9 +41,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-  }
-  .recommendations {
-    margin-top: 16px;
   }
 </style>
 
