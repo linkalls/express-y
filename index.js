@@ -77,7 +77,7 @@ app.get("/search", async (req, res) => {
     });
 
     res.render("search", { 
-      title: `検索結果: ${query}`, 
+      title: `${query} の検索結果`, 
       result: result.data, 
       query: query, 
       page: page, 

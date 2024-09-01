@@ -29,6 +29,12 @@
       function hideLoading() {
         document.getElementById('loading').classList.add('hidden');
       }
+
+      document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+          showLoading();
+        });
+      });
     </script>
   </body>
 </html>

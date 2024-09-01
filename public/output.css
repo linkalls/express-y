@@ -689,6 +689,10 @@ video {
   max-width: 42rem;
 }
 
+.max-w-xs {
+  max-width: 20rem;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -938,6 +942,10 @@ video {
     width: 1.25rem;
   }
 
+  .sm\:max-w-md {
+    max-width: 28rem;
+  }
+
   .sm\:text-2xl {
     font-size: 1.5rem;
     line-height: 2rem;
@@ -952,6 +960,10 @@ video {
 @media (min-width: 768px) {
   .md\:col-span-2 {
     grid-column: span 2 / span 2;
+  }
+
+  .md\:max-w-lg {
+    max-width: 32rem;
   }
 
   .md\:grid-cols-2 {
@@ -970,6 +982,10 @@ video {
 
   .lg\:w-3\/4 {
     width: 75%;
+  }
+
+  .lg\:max-w-2xl {
+    max-width: 42rem;
   }
 
   .lg\:grid-cols-3 {
