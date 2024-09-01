@@ -57,7 +57,7 @@ async function getVideoAndAudioUrls(videoId, userAgent) {
 }
 
 app.get("/", async (req, res) => {
-  const result = await axios.get("https://invidious.jing.rocks/api/v1/trending?region=JP")
+  const result = await axios.get("http://localhost:8080/api/v1/trending?region=JP")
   const domain = req.headers.host
   res.render("index", { title: "ホーム", result: result.data, domain })
 })
@@ -68,7 +68,7 @@ app.get("/search", async (req, res) => {
   const domain = req.headers.host;
 
   try {
-    const result = await axios.get(`https://invidious.jing.rocks/api/v1/search`, {
+    const result = await axios.get(`http://localhost:8080/api/v1/search`, {
       params: {
         q: query,
         page: page,
@@ -94,7 +94,7 @@ app.get("/watch", async (req, res) => {
   const userAgent = req.headers['user-agent'];
   console.log(videoId);
   try {
-    const result = await axios.get(`https://invidious.jing.rocks/api/v1/videos/${videoId}`);
+    const result = await axios.get(`http://localhost:8080/api/v1/videos/${videoId}`);
     const { videoUrl, audioUrl } = await getVideoAndAudioUrls(videoId, userAgent);
 
     const recommendations = result.data.recommendedVideos || [];

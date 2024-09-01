@@ -23,7 +23,7 @@
           <% recommendations.forEach(recommendation => { %>
           <li class="bg-gray-100 p-4 rounded-lg shadow-md">
             <a href="/watch?v=<%= recommendation.videoId %>" class="block">
-              <img src="<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
+              <img src="http://localhost:8080<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
               <span class="text-lg font-semibold text-gray-900"><%= recommendation.title %></span>
             </a>
           </li>
