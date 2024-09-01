@@ -6,7 +6,7 @@
         <video id="my-video" class="video-js vjs-default-skin w-full h-full" controls preload="auto">
           <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
         </video>
-        <audio id="audioPlayer" src="<%= audioUrl %>" type="audio/webm"></audio>
+
       </div>
       <div class="mb-8">
         <h2 class="text-2xl font-semibold mb-2">Description</h2>
@@ -54,97 +54,57 @@
 </style>
 
 <script>
-  var player = videojs("my-video", {
-    techOrder: ["youtube"],
-    plugins: {
-      videoJsResolutionSwitcher: {
-        default: "high",
-        dynamicLabel: true,
-      },
-      httpSourceSelector: {},
-      qualityLevels: {},
-      markers: {
-        markers: [
-          { time: 9.5, text: "Marker 1" },
-          { time: 16, text: "Marker 2" },
-        ],
-      },
-      mobileUi: {},
-      share: {},
-      vr: {},
+ var player = videojs("my-video", {
+  techOrder: ["youtube"],
+  plugins: {
+    videoJsResolutionSwitcher: {
+      default: "high",
+      dynamicLabel: true,
     },
-  });
+    httpSourceSelector: {},
+    qualityLevels: {},
+    markers: {
+      markers: [
+        { time: 9.5, text: "Marker 1" },
+        { time: 16, text: "Marker 2" },
+      ],
+    },
+    mobileUi: {},
+    vr: {},
+  },
+});
 
-  const audioPlayer = document.getElementById("audioPlayer");
-  let syncTimer;
+// ビデオプレーヤーの音声を有効にする
+player.muted(false);
 
-  function syncAudioVideo() {
-    if (Math.abs(player.currentTime() - audioPlayer.currentTime) > 0.1) {
-      audioPlayer.currentTime = player.currentTime();
-    }
+// Description toggle functionality
+const description = document.getElementById("description");
+const toggleDescription = document.getElementById("toggleDescription");
+
+toggleDescription.addEventListener("click", () => {
+  if (description.classList.contains("max-h-24")) {
+    description.classList.remove("max-h-24");
+    toggleDescription.textContent = "減らす";
+  } else {
+    description.classList.add("max-h-24");
+    toggleDescription.textContent = "もっとみる";
   }
+});
 
-  function setupSync() {
-    clearInterval(syncTimer);
-    syncTimer = setInterval(syncAudioVideo, 100);
-  }
+// Mute toggle functionality
+const toggleMute = document.getElementById("toggleMute");
+let isMuted = false;
 
-  function pauseAudio() {
-    audioPlayer.pause();
-    clearInterval(syncTimer);
-  }
+toggleMute.addEventListener("click", () => {
+  isMuted = !isMuted;
+  player.muted(isMuted);
+  toggleMute.textContent = isMuted ? '音声オン' : '音声オフ';
+});
 
-  function playAudio() {
-    audioPlayer.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
-    setupSync();
-  }
-
-  player.on("play", () => {
-    audioPlayer.currentTime = player.currentTime();
-    playAudio();
+document.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', function() {
+    showLoading();
   });
+});
 
-  player.on("pause", () => {
-    pauseAudio();
-  });
-
-  player.on("seeking", () => {
-    audioPlayer.currentTime = player.currentTime();
-  });
-
-  player.on("waiting", () => {
-    pauseAudio();
-  });
-
-  player.on("canplay", () => {
-    playAudio();
-  });
-
-  player.on("ended", () => {
-    pauseAudio();
-  });
-
-  audioPlayer.addEventListener("ended", () => {
-    player.pause();
-    clearInterval(syncTimer);
-  });
-
-  // ビデオプレーヤーの音声を無効にする
-  player.muted(true);
-
-  // Description toggle functionality
-  const description = document.getElementById("description");
-  const toggleDescription = document.getElementById("toggleDescription");
-
-  toggleDescription.addEventListener("click", () => {
-    if (description.classList.contains("max-h-24")) {
-      description.classList.remove("max-h-24");
-      toggleDescription.textContent = "減らす";
-    } else {
-      description.classList.add("max-h-24");
-      toggleDescription.textContent = "もっとみる";
-    }
-  });
 </script>
