@@ -45,10 +45,11 @@ app.get("/search", async (req, res) => {
       result: result.data, 
       query: query, 
       page: page, 
-      domain: domain 
+      domain: domain ,
+      serverIp
     });
   } catch (error) {
-    console.error("Error fetching search results:", error,serverIp);
+    console.error("Error fetching search results:", error);
     res.status(500).send("Error fetching search results");
   }
 });

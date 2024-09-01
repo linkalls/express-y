@@ -3,10 +3,9 @@
   <div class="flex flex-col lg:flex-row">
     <div class="lg:w-3/4">
       <div class="video-wrapper mb-8">
-        <video id="my-video" class="video-js vjs-default-skin w-full h-full" controls preload="auto">
+        <video id="my-video" class="video-js vjs-default-skin w-full h-full"  autoplay controls preload="auto">
           <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
         </video>
-
       </div>
       <div class="mb-8">
         <h2 class="text-2xl font-semibold mb-2">Description</h2>
@@ -34,6 +33,16 @@
   </div>
 </div>
 
+<!-- ポップアップのHTML -->
+<div id="redirect-popup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+    <h2 class="text-2xl font-bold mb-4">リダイレクトの確認</h2>
+    <p class="mb-4">このビデオは他のウェブサイトで再生できません。<br>リダイレクトしてもよろしいですか？</p>
+    <button id="confirmRedirect" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">はい</button>
+    <button id="cancelRedirect" class="bg-gray-500 text-white px-4 py-2 rounded">いいえ</button>
+  </div>
+</div>
+
 <style>
   .container {
     max-width: 1200px;
@@ -51,10 +60,13 @@
     width: 100%;
     height: 100%;
   }
+  #redirect-popup.hidden {
+    display: none;
+  }
 </style>
 
 <script>
- var player = videojs("my-video", {
+var player = videojs("my-video", {
   techOrder: ["youtube"],
   plugins: {
     videoJsResolutionSwitcher: {
@@ -77,34 +89,54 @@
 // ビデオプレーヤーの音声を有効にする
 player.muted(false);
 
+// エラーハンドリング
+player.on('error', function() {
+  const error = player.error();
+  if (error && error.code === 1150) {
+    document.getElementById('redirect-popup').classList.remove('hidden');
+  }
+});
+
+// ポップアップのボタンイベント
+document.getElementById('confirmRedirect').addEventListener('click', function() {
+  window.location.href = `http://<%= serverIp %>:8080/watch?v=<%= videoId %>`;
+});
+
+document.getElementById('cancelRedirect').addEventListener('click', function() {
+  document.getElementById('redirect-popup').classList.add('hidden');
+});
+
 // Description toggle functionality
 const description = document.getElementById("description");
 const toggleDescription = document.getElementById("toggleDescription");
 
-toggleDescription.addEventListener("click", () => {
-  if (description.classList.contains("max-h-24")) {
-    description.classList.remove("max-h-24");
-    toggleDescription.textContent = "減らす";
-  } else {
-    description.classList.add("max-h-24");
-    toggleDescription.textContent = "もっとみる";
-  }
-});
+if (toggleDescription) {
+  toggleDescription.addEventListener("click", () => {
+    if (description.classList.contains("max-h-24")) {
+      description.classList.remove("max-h-24");
+      toggleDescription.textContent = "減らす";
+    } else {
+      description.classList.add("max-h-24");
+      toggleDescription.textContent = "もっとみる";
+    }
+  });
+}
 
 // Mute toggle functionality
 const toggleMute = document.getElementById("toggleMute");
 let isMuted = false;
 
-toggleMute.addEventListener("click", () => {
-  isMuted = !isMuted;
-  player.muted(isMuted);
-  toggleMute.textContent = isMuted ? '音声オン' : '音声オフ';
-});
+if (toggleMute) {
+  toggleMute.addEventListener("click", () => {
+    isMuted = !isMuted;
+    player.muted(isMuted);
+    toggleMute.textContent = isMuted ? '音声オン' : '音声オフ';
+  });
+}
 
 document.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', function() {
     showLoading();
   });
 });
-
 </script>
