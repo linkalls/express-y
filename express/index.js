@@ -3,10 +3,12 @@ import express from "express";
 import expressLayouts from "express-ejs-layouts";
 import path from "path";
 import { fileURLToPath } from "url";
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const serverIp = '192.168.11.38'; // 固定IPアドレス
+const serverIp = '127.0.0.1';
+
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -17,11 +19,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (req, res) => {
   try {
-    const result = await axios.get(`http://${serverIp}:8080/api/v1/trending?region=JP`);
+    const result = await axios.get(`http://localhost:8080/api/v1/trending?region=JP`);
     const domain = req.headers.host;
-    res.render("index", { title: "ホーム", result: result.data, domain,serverIp });
+    res.render("index", { title: "ホーム", result: result.data, domain });
   } catch (error) {
-    console.error("Error fetching trending videos:", error);
+    console.error("Error fetching trending videos:", error,serverIp);
     res.status(500).send("Error fetching trending videos");
   }
 });
@@ -32,7 +34,7 @@ app.get("/search", async (req, res) => {
   const domain = req.headers.host;
 
   try {
-    const result = await axios.get(`http://${serverIp}:8080/api/v1/search`, {
+    const result = await axios.get(`http://localhost:8080/api/v1/search`, {
       params: {
         q: query,
         page: page,
@@ -58,13 +60,13 @@ app.get("/watch", async (req, res) => {
   const videoId = req.query.v;
 
   try {
-    const result = await axios.get(`http://${serverIp}:8080/api/v1/videos/${videoId}`);
+    const result = await axios.get(`http://localhost:8080/api/v1/videos/${videoId}`);
 
     const recommendations = result.data.recommendedVideos || [];
     const title = result.data.title;
     const description = result.data.descriptionHtml;
 
-    res.render("watch", { title, videoId, recommendations, description ,serverIp});
+    res.render("watch", { title, videoId, recommendations, description });
   } catch (error) {
     console.error("Error fetching video details:", error);
     res.status(500).send("Error fetching video details");
@@ -72,5 +74,5 @@ app.get("/watch", async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log(`Server is running on http://${serverIp}:3000`);
+  console.log(`Server is running on http://localhost:3000`);
 });

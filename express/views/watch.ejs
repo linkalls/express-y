@@ -3,16 +3,14 @@
   <div class="flex flex-col lg:flex-row">
     <div class="lg:w-3/4">
       <div class="video-wrapper mb-8">
-        <video id="my-video" class="video-js vjs-default-skin w-full h-full"  autoplay controls preload="auto">
-          <source src="https://www.youtube.com/watch?v=<%= videoId %>" type="video/youtube" />
-        </video>
+        <iframe width="914" height="514" src="https://www.youtube.com/embed/<%= videoId %>" title="<%= title %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
       <div class="mb-8">
         <h2 class="text-2xl font-semibold mb-2">Description</h2>
         <div id="description" class="text-gray-700 overflow-hidden max-h-24">
           <%- description %>
         </div>
-        <button id="toggleDescription" class="mt-2 text-blue-500">もっと見る</button>
+        <button id="toggleDescription" class="mt-2 text-blue-500 hidden">もっと見る</button>
       </div>
     </div>
     <div class="lg:w-1/4">
@@ -22,7 +20,7 @@
           <% recommendations.forEach(recommendation => { %>
           <li class="bg-gray-100 p-4 rounded-lg shadow-md">
             <a href="/watch?v=<%= recommendation.videoId %>" class="block">
-              <img src="http://<%=serverIp %>:8080<%= recommendation.videoThumbnails[0].url %>" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
+              <img src="https://img.youtube.com/vi/<%= recommendation.videoId %>/hqdefault.jpg" alt="<%= recommendation.title %>" class="w-full h-32 object-cover rounded-md mb-2" />
               <span class="text-lg font-semibold text-gray-900"><%= recommendation.title %></span>
             </a>
           </li>
@@ -53,7 +51,7 @@
     height: 0;
     overflow: hidden;
   }
-  .video-js {
+  .video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -66,40 +64,15 @@
 </style>
 
 <script>
-var player = videojs("my-video", {
-  techOrder: ["youtube"],
-  plugins: {
-    videoJsResolutionSwitcher: {
-      default: "high",
-      dynamicLabel: true,
-    },
-    httpSourceSelector: {},
-    qualityLevels: {},
-    markers: {
-      markers: [
-        { time: 9.5, text: "Marker 1" },
-        { time: 16, text: "Marker 2" },
-      ],
-    },
-    mobileUi: {},
-    vr: {},
-  },
-});
-
-// ビデオプレーヤーの音声を有効にする
-player.muted(false);
-
 // エラーハンドリング
-player.on('error', function() {
-  const error = player.error();
-  if (error && error.code === 1150) {
-    document.getElementById('redirect-popup').classList.remove('hidden');
-  }
+var player = document.getElementById('my-video');
+player.addEventListener('error', function() {
+  document.getElementById('redirect-popup').classList.remove('hidden');
 });
 
 // ポップアップのボタンイベント
 document.getElementById('confirmRedirect').addEventListener('click', function() {
-  window.location.href = `http://<%= serverIp %>:8080/watch?v=<%= videoId %>`;
+  window.location.href = `/watch?v=<%= videoId %>`;
 });
 
 document.getElementById('cancelRedirect').addEventListener('click', function() {
@@ -109,6 +82,11 @@ document.getElementById('cancelRedirect').addEventListener('click', function() {
 // Description toggle functionality
 const description = document.getElementById("description");
 const toggleDescription = document.getElementById("toggleDescription");
+const maxDescriptionLength = 100; // 文字数の制限
+
+if (description.textContent.length > maxDescriptionLength) {
+  toggleDescription.classList.remove("hidden");
+}
 
 if (toggleDescription) {
   toggleDescription.addEventListener("click", () => {
@@ -129,7 +107,7 @@ let isMuted = false;
 if (toggleMute) {
   toggleMute.addEventListener("click", () => {
     isMuted = !isMuted;
-    player.muted(isMuted);
+    player.muted = isMuted;
     toggleMute.textContent = isMuted ? '音声オン' : '音声オフ';
   });
 }

@@ -8,12 +8,9 @@
         <% if (item.type === 'video' && item.title && item.videoId) { %>
           <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <% if (item.videoThumbnails && item.videoThumbnails.length > 0) { %>
-              <% const high = item.videoThumbnails.find(thumbnail => thumbnail.quality === 'high'); %>
-              <% if (high) { %>
                 <a href="/watch?v=<%= item.videoId %>">
-                  <img src="http://<%=serverIp %>:8080<%= high.url %>" alt="Thumbnail" class="w-full h-48 object-cover">
+                  <img src="https://img.youtube.com/vi/<%= item.videoId %>/hqdefault.jpg" alt="Thumbnail" class="w-full h-48 object-cover">
                 </a>
-              <% } %>
             <% } %>
             <div class="p-4">
               <a href="/watch?v=<%= item.videoId %>">
